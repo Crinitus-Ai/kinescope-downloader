@@ -148,7 +148,7 @@ audio = urllib.request.urlopen(audio_req).read()
 # Download all other segments for this stream
 audio += get_segments(
     audio_req,
-    mpd['MPD']['Period']['AdaptationSet'][1]["Representation"]["SegmentList"]["SegmentURL"],
+    base_audio_url + mpd['MPD']['Period']['AdaptationSet'][1]["Representation"]["SegmentList"]["SegmentURL"],
     audio_chunk_segments
 )
 
@@ -179,7 +179,7 @@ for video_stream in mpd['MPD']['Period']['AdaptationSet'][0]["Representation"]:
     video = urllib.request.urlopen(video_req).read()
     video += get_segments(
         video_req,
-        video_stream["SegmentList"]["SegmentURL"],
+        base_video_url + video_stream["SegmentList"]["SegmentURL"],
         video_chunk_segments
     )
     # we need only one video stream
