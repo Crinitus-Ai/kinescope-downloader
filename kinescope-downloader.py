@@ -171,7 +171,7 @@ for video_stream in mpd['MPD']['Period']['AdaptationSet'][0]["Representation"]:
         continue
 
     video_url = video_stream["SegmentList"]["Initialization"]["@sourceURL"]
-    base_video_url = mpd['MPD']['Period']['AdaptationSet'][0]["Representation"]['BaseURL']
+    base_video_url = video_stream['BaseURL']
     print("base_video_url: ", base_video_url)
     video_url =  base_video_url + video_url
     bytes_range = video_stream["SegmentList"]["Initialization"]["@range"]
