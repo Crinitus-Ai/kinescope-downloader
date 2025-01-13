@@ -135,6 +135,9 @@ print("Done.\n")
 print("Get audio stream...")
 # First, we are prepare to download init segment for this stream
 audio_url = mpd['MPD']['Period']['AdaptationSet'][1]["Representation"]["SegmentList"]["Initialization"]["@sourceURL"]
+base_audio_url = mpd['MPD']['Period']['AdaptationSet'][1]["Representation"]['BaseURL']
+audio_url = base_audio_url + audio_url
+print("base_audio_url: ", base_audio_url)
 bytes_range = mpd['MPD']['Period']['AdaptationSet'][1]["Representation"]["SegmentList"]["Initialization"]["@range"]
 # create request object
 audio_req = urllib.request.Request(audio_url)
@@ -167,6 +170,9 @@ for video_stream in mpd['MPD']['Period']['AdaptationSet'][0]["Representation"]:
         continue
 
     video_url = video_stream["SegmentList"]["Initialization"]["@sourceURL"]
+    base_video_url = mpd['MPD']['Period']['AdaptationSet'][0]["Representation"]['BaseURL']
+    print("base_video_url: ", base_video_url)
+    video_url =  base_video_url + video_url
     bytes_range = video_stream["SegmentList"]["Initialization"]["@range"]
     video_req = urllib.request.Request(video_url)
     video_req.add_header('Range', f"bytes={bytes_range}")
