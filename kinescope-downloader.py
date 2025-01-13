@@ -39,7 +39,7 @@ def get_media_byte_range(req, from_b, to_b, first_seg, last_seg, total_segs):
     return urllib.request.urlopen(req).read()
 
 
-def get_segments(req, segments, chunk):
+def get_segments(req, base_url, segments, chunk):
     # will try to combine a few (*_CHUNK_SEGMENTS) segments to download together
     # it will significantly improve speed
     media = b''
@@ -50,7 +50,7 @@ def get_segments(req, segments, chunk):
         seg_url = segments[seg_pointer]["@media"]
         # recreate request object if the URL of the next segment is different.
         if seg_url != req.full_url:
-            req = urllib.request.Request(seg_url)
+            req = urllib.request.Request(base_url + seg_url)
 
         # start download chunk from this segment number
         seg_from = seg_pointer
@@ -148,7 +148,8 @@ audio = urllib.request.urlopen(audio_req).read()
 # Download all other segments for this stream
 audio += get_segments(
     audio_req,
-    base_audio_url + mpd['MPD']['Period']['AdaptationSet'][1]["Representation"]["SegmentList"]["SegmentURL"],
+    base_audio_url,
+    mpd['MPD']['Period']['AdaptationSet'][1]["Representation"]["SegmentList"]["SegmentURL"],
     audio_chunk_segments
 )
 
@@ -179,7 +180,8 @@ for video_stream in mpd['MPD']['Period']['AdaptationSet'][0]["Representation"]:
     video = urllib.request.urlopen(video_req).read()
     video += get_segments(
         video_req,
-        base_video_url + video_stream["SegmentList"]["SegmentURL"],
+        base_video_url,
+        video_stream["SegmentList"]["SegmentURL"],
         video_chunk_segments
     )
     # we need only one video stream
